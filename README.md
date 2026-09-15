@@ -11,7 +11,7 @@ npm run build
 npm run preview
 ```
 
-This first slice contains the hero, a scroll-controlled card approach, and a digital account scene. Pix, cashback, card variants, security, and a final conversion section are intentionally not implemented.
+The complete concept covers hero, scroll-controlled card approach, digital account, demonstrative Pix and cashback, conceptual card finishes, security, and the final product composition with an official-site CTA. No account functionality is implemented.
 
 ## Architecture
 
@@ -19,6 +19,7 @@ This first slice contains the hero, a scroll-controlled card approach, and a dig
 - `src/story/chapters.ts`: absolute poses and deterministic interpolation for desktop and mobile. Camera, card, phone, layers, and lights share the same progress.
 - `src/scene/Scene.tsx`: one persistent R3F Canvas, rounded solid card, phone, two floating UI surfaces, and baked studio environment.
 - `src/scene/textures.ts`: local, deterministic CanvasTexture artwork. Phone information is demonstrative; the balance is masked.
+- `src/scene/Transfer.tsx`: baked demonstrative screen states and scroll-driven transfer/return paths; both reuse the existing phone and shared progress.
 - `src/styles.css`: layouts, typography, responsive breakpoints, HTML fallback, and accessible focus states.
 
 ## Rendering decisions
@@ -29,9 +30,11 @@ The scene renders on demand, with frames requested while scrolling, moving the p
 
 Reduced motion, unavailable WebGL2, context loss, and very short landscape viewports use a static HTML/CSS composition with the same content. Browser and GPU performance must be evaluated on actual mobile hardware before publishing.
 
-## Future chapters
+## Narrative
 
-Add new absolute poses to `chapters.ts`, introduce each chapter's semantic content in `App.tsx`, and extend the existing timeline. Keep one Canvas and shared models. Each new chapter should have a readable rest position, reverse-scroll continuity, a mobile pose, and a static equivalent. Validate every added transition before extending the next chapter.
+Progress 0..1 retains the original first-slice poses and physical scroll distance. Pix occupies 1..2; cashback occupies 2..3. `STORY_END` and the responsive story heights extend the existing timeline without renormalizing the original poses. The account anchor still targets progress 1. All event states derive directly from progress for reverse scrolling.
+
+Cards and security occupy progress 3..5. The closing composition extends the same timeline to 6, preserving the security pose at 5 and resting from 5.8 onward. It reuses the phone, card, and account screen. Protection layers contract before being culled. Static modes include the same final CTA and independent-portfolio disclaimer.
 
 ## Verification artifacts
 

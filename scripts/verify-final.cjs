@@ -11,7 +11,7 @@ async (page) => {
       await test.setViewportSize(size);
       await test.waitForTimeout(300);
       for (const progress of [0, 1]) {
-        await test.evaluate(p => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * p), progress);
+        await test.evaluate(p => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * p / Number(document.querySelector('.story').dataset.storyEnd)), progress);
         await test.waitForFunction(p => Math.abs((window.__sceneInfo?.progress ?? -1) - p) < .01, progress);
         const label = await test.locator('.concept-label').boundingBox();
         if (label.y + label.height > size.height) throw new Error('Concept label outside viewport');

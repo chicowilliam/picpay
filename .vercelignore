@@ -1,0 +1,11 @@
+node_modules
+output
+.performance-reports
+.playwright
+.playwright-cli
+.codegraph*
+scripts
+*.tsbuildinfo
+VALIDATION.md
+RELEASE-CANDIDATE.md
+.env*

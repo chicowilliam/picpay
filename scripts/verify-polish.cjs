@@ -6,7 +6,7 @@ async (page) => {
   test.on('console', entry => { if (entry.type() === 'error') errors.push(entry.text()); });
   const check = (value, message) => { if (!value) throw new Error(message); };
   const scroll = async progress => {
-    await test.evaluate(p => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * p), progress);
+    await test.evaluate(p => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * p / Number(document.querySelector('.story').dataset.storyEnd)), progress);
     await test.waitForFunction(p => Math.abs((window.__sceneInfo?.progress ?? -1) - p) < .01, progress);
     await test.waitForTimeout(250);
   };

@@ -8,7 +8,7 @@ async (page) => {
   const size = page.viewportSize();
   const prefix = size.width < 760 ? 'mobile' : 'desktop';
   const check = (value, message) => { if (!value) throw new Error(message); };
-  const maxScroll = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  const maxScroll = await page.evaluate(() => (document.documentElement.scrollHeight - innerHeight) / Number(document.querySelector('.story').dataset.storyEnd));
   for (const progress of [0, .32, .52, .82, 1]) {
     await page.evaluate(y => window.scrollTo(0, y), maxScroll * progress);
     await page.waitForFunction(p => Math.abs((window.__sceneInfo?.progress ?? -1) - p) < .01, progress, { timeout: 15000 });
