@@ -2,15 +2,15 @@ import { useEffect, useMemo, useRef } from 'react';
 import type { RefObject } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { CubicBezierCurve3, Group, MathUtils, Mesh, MeshBasicMaterial, TubeGeometry, Vector3 } from 'three';
+import type { Texture } from 'three';
 import type { MotionState } from '../App';
 import { amountTexture, transferTexture } from './textures';
 
 // One baked screen and one bounded path per event. No particle system or per-frame textures.
-export default function Transfer({ motion, compact }: { motion: RefObject<MotionState>; compact: boolean }) {
+export default function Transfer({ motion, compact, screenMaterial, accountMap }: { motion: RefObject<MotionState>; compact: boolean; screenMaterial: RefObject<MeshBasicMaterial | null>; accountMap: Texture }) {
   const root = useRef<Group>(null);
   const token = useRef<Group>(null);
   const path = useRef<Mesh>(null);
-  const screenMaterial = useRef<MeshBasicMaterial>(null);
   const tokenMaterial = useRef<MeshBasicMaterial>(null);
   const maps = useMemo(() => ({ pix: transferTexture('pix'), sent: transferTexture('sent'), cashback: transferTexture('cashback'), returned: transferTexture('returned'), outgoing: amountTexture(false), incoming: amountTexture(true) }), []);
   const paths = useMemo(() => {
@@ -28,7 +28,7 @@ export default function Transfer({ motion, compact }: { motion: RefObject<Motion
     const travel = MathUtils.smoothstep(p, cash ? 2.48 : 1.43, cash ? 2.85 : 1.78);
     const entry = MathUtils.smoothstep(p, 1.12, 1.32);
     if (root.current) { root.current.visible = p > 1.12; root.current.scale.y = Math.max(.001, entry); }
-    if (screenMaterial.current) screenMaterial.current.map = cash ? travel >= .999 ? maps.returned : maps.cashback : travel >= .999 ? maps.sent : maps.pix;
+    if (screenMaterial.current && p < 4.28) screenMaterial.current.map = p < 1.22 ? accountMap : cash ? travel >= .999 ? maps.returned : maps.cashback : travel >= .999 ? maps.sent : maps.pix;
     const active = cash ? p >= 2.45 && p <= 2.89 : p >= 1.4 && p <= 1.82;
     if (path.current) {
       path.current.visible = active;
@@ -43,13 +43,16 @@ export default function Transfer({ motion, compact }: { motion: RefObject<Motion
       token.current.position.copy(point);
       const appear = MathUtils.smoothstep(p, cash ? 2.45 : 1.4, cash ? 2.5 : 1.45);
       const absorb = 1 - MathUtils.smoothstep(travel, .87, 1);
-      token.current.scale.setScalar(Math.max(.001, appear * absorb) * (compact ? .95 : 1.1));
+      token.current.scale.setScalar(Math.max(.001, appear * absorb) * (compact ? 1.2 : 1.1));
       token.current.rotation.y = Math.sin(travel * Math.PI) * (cash ? -.15 : .12);
     }
     if (tokenMaterial.current) tokenMaterial.current.map = cash ? maps.incoming : maps.outgoing;
+    if (import.meta.env.DEV) {
+      const diagnostic = window as unknown as { __sceneInfo?: { transfer?: unknown } };
+      if (diagnostic.__sceneInfo) diagnostic.__sceneInfo.transfer = { chapter: p < 1.22 ? 'account' : cash ? 'cashback' : 'pix', travel, active, complete: travel >= .999, token: point.toArray() };
+    }
   });
   return <group ref={root} visible={false}>
-    <mesh position={[0, 0, .123]}><planeGeometry args={[1.72, 3.48]} /><meshBasicMaterial ref={screenMaterial} map={maps.pix} toneMapped={false} /></mesh>
     <mesh ref={path} geometry={paths.pixGeometry}><meshBasicMaterial color="#25c875" toneMapped={false} /></mesh>
     <group ref={token}>
       <mesh><planeGeometry args={[1.32, .44]} /><meshBasicMaterial ref={tokenMaterial} map={maps.outgoing} toneMapped={false} /></mesh>

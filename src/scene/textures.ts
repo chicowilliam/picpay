@@ -108,11 +108,40 @@ export function transferTexture(kind: 'pix' | 'sent' | 'cashback' | 'returned') 
     label(ctx, pix ? 'De você' : 'Saldo demonstrativo', 55, 404, 26);
     label(ctx, pix ? 'R$ 100,00' : done ? '+ R$ 12,40' : 'R$ ••••', 55, 485, 48, '#1c472d', 700);
     label(ctx, pix ? 'Origem fictícia' : done ? 'Retorno recebido' : 'Aguardando retorno', 55, 549, 21, '#55725f');
-    label(ctx, pix ? 'Para Ana' : 'Movimento de retorno', 42, 811, 30, '#1c3525', 700);
-    label(ctx, pix ? 'Destino fictício' : 'R$ 12,40 ilustrativos', 42, 859, 22, '#64786b');
+    label(ctx, pix ? 'Para Ana' : 'Movimento de retorno', pix ? 100 : 42, 811, 30, '#1c3525', 700);
+    label(ctx, pix ? 'Destino fictício' : 'R$ 12,40 ilustrativos', pix ? 100 : 42, 859, 22, '#64786b');
     round(ctx, 28, 934, 520, 95, 15, done ? '#1b6f40' : '#e4ece6');
     label(ctx, done ? '✓  Concluído' : pix ? 'Transferência em movimento' : 'De volta à sua conta', 53, 994, done ? 29 : 22, done ? '#fff' : '#4f6657', 600);
     label(ctx, 'SIMULAÇÃO · SEM TRANSAÇÃO REAL', 50, 1119, 17, '#64786b', 600);
+  });
+}
+
+export function finishTexture(finish: 'graphite' | 'silver') {
+  return texture(1024, 644, (ctx, w, h) => {
+    const silver = finish === 'silver', ink = silver ? '#243d30' : '#e9f2eb';
+    ctx.fillStyle = silver ? '#bfc8c2' : '#26342d'; ctx.fillRect(0, 0, w, h);
+    for (let y = 0; y < h; y += 2) { ctx.fillStyle = y % 6 ? '#ffffff06' : '#001e0a08'; ctx.fillRect(0, y, w, 1); }
+    label(ctx, 'picpay', 78, 140, 84, ink, 800);
+    label(ctx, silver ? 'ESTUDO 03 / PRATA' : 'ESTUDO 02 / GRAFITE', 80, 562, 23, ink, 600);
+    label(ctx, 'CONCEPT', 790, 562, 22, ink, 600);
+  });
+}
+
+export function securityTexture(blocked: boolean) {
+  return texture(576, 1192, (ctx, w, h) => {
+    ctx.fillStyle = '#17271e'; ctx.fillRect(0, 0, w, h);
+    label(ctx, '9:41', 37, 43, 18, '#d9e9de', 700);
+    label(ctx, 'picpay', 38, 158, 38, '#c4e8d0', 800);
+    label(ctx, 'Seu cartão', 38, 245, 42, '#f0f7f2', 600);
+    label(ctx, 'CONTROLES · CONCEITO', 38, 296, 17, '#a0baa9', 600);
+    round(ctx, 28, 365, 520, 238, 18, '#253d2e');
+    label(ctx, 'Bloqueio', 52, 421, 29, '#f0f7f2', 600);
+    label(ctx, 'temporário', 52, 462, 29, '#f0f7f2', 600);
+    label(ctx, blocked ? 'Cartão bloqueado' : 'Cartão disponível', 52, 559, 25, blocked ? '#87dda5' : '#b8cbbf', 600);
+    label(ctx, 'Você decide.', 38, 744, 31, '#eef7f0', 600);
+    label(ctx, 'Controle no seu tempo.', 38, 801, 23, '#a0baa9');
+    label(ctx, blocked ? '✓  Bloqueio ilustrativo ativo' : 'Aguardando ativação ilustrativa', 38, 973, 22, '#bde4ca', 600);
+    label(ctx, 'SIMULAÇÃO · NENHUMA AÇÃO REAL', 44, 1119, 17, '#a0baa9', 600);
   });
 }
 
