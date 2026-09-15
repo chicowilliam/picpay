@@ -1,6 +1,6 @@
 export interface ScenePose { x: number; y: number; z: number; rx: number; ry: number; rz: number; scale: number; cameraZ: number; phone: number; spread: number; light: number }
 export interface Chapter { at: number; desktop: ScenePose; mobile: ScenePose }
-export const STORY_END = 3;
+export const STORY_END = 6;
 
 // Each chapter owns an absolute pose, so reverse scrolling and deep links are deterministic.
 export const chapters: Chapter[] = [
@@ -14,23 +14,42 @@ export const chapters: Chapter[] = [
 // Preserve the complete first-slice coordinate range (0..1), including its scroll distance.
 const account = chapters[chapters.length - 1];
 chapters.push(
-  { at: 1.3, desktop: { ...account.desktop, spread: 0, x: .3, scale: .43 }, mobile: { ...account.mobile, spread: 0, scale: .4 } },
-  { at: 1.85, desktop: { ...account.desktop, spread: 0, x: .3, scale: .43, cameraZ: 8.35 }, mobile: { ...account.mobile, spread: 0, scale: .4 } },
+  { at: 1.3, desktop: { ...account.desktop, spread: 0, x: .3, scale: .43 }, mobile: { ...account.mobile, spread: 0, x: -.95, scale: .32 } },
+  { at: 1.85, desktop: { ...account.desktop, spread: 0, x: .3, scale: .43, cameraZ: 8.35 }, mobile: { ...account.mobile, spread: 0, x: -.95, scale: .32 } },
   { at: 2.22, desktop: { ...account.desktop, spread: 0, x: 2.65, y: -.95, z: 1.3, scale: .65, ry: .3, rz: -.12 }, mobile: { ...account.mobile, spread: 0, x: .45, scale: .51, ry: .3, rz: -.12 } },
   { at: 2.48, desktop: { ...account.desktop, spread: 0, x: .9, y: -.8, z: 1.5, scale: .72, ry: -.2, rz: -.15, light: 1.2 }, mobile: { ...account.mobile, spread: 0, x: -.3, scale: .54, rz: -.15 } },
   { at: 3, desktop: { ...account.desktop, spread: 0, x: .65, y: -.9, z: 1, scale: .65, ry: -.25, rz: -.2 }, mobile: { ...account.mobile, spread: 0, x: -.5, scale: .51, rz: -.2 } },
 );
 
-export function samplePose(progress: number, mobile: boolean): ScenePose {
+const cashback = chapters[chapters.length - 1];
+chapters.push(
+  { at: 3.4, desktop: { ...cashback.desktop, x: 1.75, y: -.65, scale: .75, ry: -.4, rz: -.15 }, mobile: { ...cashback.mobile, x: -.2, scale: .6, ry: -.32, rz: -.12 } },
+  { at: 3.85, desktop: { ...cashback.desktop, x: 1.75, y: -.65, scale: .75, ry: -.3, rz: -.12, cameraZ: 8.4, light: 1.2 }, mobile: { ...cashback.mobile, x: -.2, scale: .6, ry: -.27, rz: -.12 } },
+  { at: 4.25, desktop: { ...cashback.desktop, x: 1.35, y: -.55, scale: .62, light: .95 }, mobile: { ...cashback.mobile, x: -.3, scale: .5, light: .95 } },
+  { at: 4.65, desktop: { ...cashback.desktop, x: .8, y: -1.1, scale: .5, light: .85 }, mobile: { ...cashback.mobile, x: -.5, scale: .44, light: .85 } },
+  { at: 5, desktop: { ...cashback.desktop, x: .8, y: -1.1, scale: .5, light: .9 }, mobile: { ...cashback.mobile, x: -.5, scale: .44, light: .9 } },
+);
+
+const security = chapters[chapters.length - 1];
+const closing: Chapter = {
+  at: 5.8,
+  desktop: { ...security.desktop, x: 1.03, y: -.9, z: 1.05, rx: .04, ry: -.32, rz: -.11, scale: .51, cameraZ: 8.9, light: 1.15 },
+  mobile: { ...security.mobile, x: -.5, z: .72, rx: .04, ry: -.28, rz: -.14, scale: .43, light: 1.15 },
+};
+chapters.push(closing, { ...closing, at: STORY_END });
+
+const poseKeys = Object.keys(chapters[0].desktop) as (keyof ScenePose)[];
+
+export function samplePose(progress: number, mobile: boolean, result = {} as ScenePose): ScenePose {
   const p = Math.max(0, Math.min(STORY_END, progress));
-  const end = chapters.findIndex((chapter) => chapter.at >= p);
+  let end = 0;
+  while (end < chapters.length - 1 && chapters[end].at < p) end++;
   const b = chapters[Math.max(0, end)];
   const a = chapters[Math.max(0, end - 1)];
   const t = a === b ? 0 : (p - a.at) / (b.at - a.at);
   const eased = t * t * (3 - 2 * t);
   const from = mobile ? a.mobile : a.desktop;
   const to = mobile ? b.mobile : b.desktop;
-  const result = {} as ScenePose;
-  for (const key of Object.keys(from) as (keyof ScenePose)[]) result[key] = from[key] + (to[key] - from[key]) * eased;
+  for (const key of poseKeys) result[key] = from[key] + (to[key] - from[key]) * eased;
   return result;
 }

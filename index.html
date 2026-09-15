@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#111513" />
     <link rel="icon" href="data:," />
+    <link rel="preload" href="/node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="description" content="PicPay Unofficial Concept / Concept Redesign. Estudo independente de design e movimento, sem vínculo oficial com o PicPay." />
     <title>PicPay — Unofficial Concept</title>
   </head>
   <body>
-    <div id="root"></div>
-    <noscript><main style="font-family: sans-serif; padding: 3rem; max-width: 50rem; margin: auto"><p>Unofficial Concept / Concept Redesign</p><h1>PicPay. Seu dinheiro. Em movimento.</h1><p>Projeto independente de portfólio, sem vínculo oficial com o PicPay.</p><h2>Sua conta. Tudo à mão.</h2><p>Uma representação conceitual da conta digital PicPay.</p><a href="https://picpay.com/pt-br/pf">Abrir conta no PicPay ↗</a></main></noscript>
+    <div id="root">
+      <!-- Same hero while the application module loads; React replaces this shell. -->
+      <div class="experience boot-shell">
+        <header class="nav"><a class="wordmark" href="#" aria-label="PicPay, início">picpay<span class="brand-period">.</span></a><a class="nav-external" href="https://picpay.com/pt-br/pf" target="_blank" rel="noopener noreferrer">Site oficial ↗</a></header>
+        <main class="stage">
+          <section class="hero-copy"><div class="eyebrow"><span></span> SIMPLES. DO SEU JEITO.</div><h1>Seu dinheiro.<br /><span>Em movimento.</span></h1><a class="primary-cta" href="https://picpay.com/pt-br/pf" target="_blank" rel="noopener noreferrer">Abrir conta no PicPay ↗</a></section>
+          <div class="fallback-hero" aria-hidden="true"><div class="static-card"><span class="card-wordmark">picpay</span><span class="static-chip"></span><span class="card-caption">CONCEPT DESIGN</span><span class="card-contactless">)))</span></div></div>
+          <div class="concept-label">Unofficial Concept / Concept Redesign<span>Projeto independente de portfólio, sem vínculo com o PicPay.</span></div>
+        </main>
+      </div>
+    </div>
+    <noscript><section style="font-family: sans-serif; padding: 3rem; max-width: 50rem; margin: auto"><h2>Sua conta. Tudo à mão.</h2><p>Uma representação conceitual da conta digital PicPay.</p><a href="https://picpay.com/pt-br/pf">Abrir conta no PicPay ↗</a></section></noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
