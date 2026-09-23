@@ -5,9 +5,9 @@ export const STORY_END = 6;
 // Each chapter owns an absolute pose, so reverse scrolling and deep links are deterministic.
 export const chapters: Chapter[] = [
   { at: 0, desktop: { x: 0, y: -1.12, z: 0, rx: .17, ry: -.24, rz: -.16, scale: .78, cameraZ: 8.6, phone: 0, spread: 0, light: 1 }, mobile: { x: 0, y: -.52, z: 0, rx: .16, ry: -.23, rz: -.19, scale: .79, cameraZ: 8.6, phone: 0, spread: 0, light: 1 } },
-  { at: .22, desktop: { x: 0, y: 0, z: .5, rx: .12, ry: -.38, rz: -.23, scale: 1.05, cameraZ: 8.3, phone: 0, spread: 0, light: 1.1 }, mobile: { x: 0, y: .1, z: .2, rx: .12, ry: -.38, rz: -.2, scale: .83, cameraZ: 8.5, phone: 0, spread: 0, light: 1.1 } },
-  { at: .48, desktop: { x: -.1, y: .25, z: 1.55, rx: .08, ry: -1.24, rz: -.12, scale: 1.22, cameraZ: 7.6, phone: 0, spread: 0, light: 1.25 }, mobile: { x: 0, y: .15, z: .7, rx: .08, ry: -1.16, rz: -.12, scale: 1, cameraZ: 8, phone: 0, spread: 0, light: 1.25 } },
-  { at: .77, desktop: { x: .35, y: -.95, z: .5, rx: .05, ry: -.36, rz: -.26, scale: .5, cameraZ: 8.6, phone: 1, spread: .4, light: 1.15 }, mobile: { x: -.63, y: -.8, z: .6, rx: .04, ry: -.3, rz: -.25, scale: .46, cameraZ: 8.6, phone: 1, spread: .3, light: 1.15 } },
+  { at: .17, desktop: { x: 1.75, y: -.56, z: .17, rx: .15, ry: -.24, rz: -.17, scale: .72, cameraZ: 8.57, phone: 0, spread: 0, light: 1.05 }, mobile: { x: -.06, y: -.6, z: .07, rx: .14, ry: -.23, rz: -.195, scale: .73, cameraZ: 8.6, phone: 0, spread: 0, light: 1.05 } },
+  { at: .3, desktop: { x: 1.6, y: -.65, z: .3, rx: .13, ry: -.25, rz: -.18, scale: .68, cameraZ: 8.55, phone: 1, spread: .4, light: 1.15 }, mobile: { x: -.12, y: -.65, z: .12, rx: .12, ry: -.24, rz: -.2, scale: .68, cameraZ: 8.6, phone: 1, spread: .3, light: 1.15 } },
+  { at: .65, desktop: { x: .9, y: -1.02, z: .65, rx: .1, ry: -.27, rz: -.23, scale: .56, cameraZ: 8.5, phone: 1, spread: .7, light: 1.125 }, mobile: { x: -.4, y: -.9, z: .4, rx: .1, ry: -.25, rz: -.23, scale: .54, cameraZ: 8.6, phone: 1, spread: .475, light: 1.125 } },
   { at: 1, desktop: { x: .35, y: -1.2, z: 1, rx: .08, ry: -.28, rz: -.3, scale: .48, cameraZ: 8.6, phone: 1, spread: 1, light: 1.1 }, mobile: { x: -.61, y: -1.02, z: .8, rx: .08, ry: -.26, rz: -.3, scale: .47, cameraZ: 8.6, phone: 1, spread: .65, light: 1.1 } },
 ];
 
@@ -39,6 +39,28 @@ const closing: Chapter = {
 chapters.push(closing, { ...closing, at: STORY_END });
 
 const poseKeys = Object.keys(chapters[0].desktop) as (keyof ScenePose)[];
+
+// One travelling card ends at Account. Later appearances belong to their chapter,
+// with the inter-chapter repositioning concealed while the card is retracted.
+const cardAppearances = [
+  [-1, 0, 1, 1.25],
+  [2.345, 2.45, 3, 3.2],
+  [3.22, 3.4, 4, 4.22],
+  [4.45, 4.65, 5.05, 5.25],
+  [5.45, 5.75, STORY_END, STORY_END + 1],
+];
+const smoothProgress = (p: number, start: number, end: number) => {
+  const t = Math.max(0, Math.min(1, (p - start) / (end - start)));
+  return t * t * (3 - 2 * t);
+};
+
+export function sampleCardPresence(progress: number): number {
+  let presence = 0;
+  for (const [start, entered, exit, ended] of cardAppearances) {
+    presence = Math.max(presence, smoothProgress(progress, start, entered) * (1 - smoothProgress(progress, exit, ended)));
+  }
+  return presence;
+}
 
 export function samplePose(progress: number, mobile: boolean, result = {} as ScenePose): ScenePose {
   const p = Math.max(0, Math.min(STORY_END, progress));

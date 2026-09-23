@@ -49,6 +49,26 @@ export function backTexture() {
   });
 }
 
+export function digitalCardTexture() {
+  return texture(768, 483, (ctx) => {
+    ctx.scale(.75, .75);
+    const surface = ctx.createLinearGradient(0, 644, 1024, 0);
+    surface.addColorStop(0, '#075238');
+    surface.addColorStop(.48, '#12ad67');
+    surface.addColorStop(1, '#5be6a0');
+    ctx.fillStyle = surface; ctx.fillRect(0, 0, 1024, 644);
+    ctx.strokeStyle = '#d7ffe733'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(4, 4, 1016, 636, 30); ctx.stroke();
+    label(ctx, 'picpay', 78, 140, 84, '#f4fff7', 800);
+    label(ctx, 'CONCEPT DESIGN', 80, 562, 19, '#dcf6e7', 500);
+    label(ctx, 'picpay', 794, 562, 39, '#e9fff1', 700);
+    ctx.strokeStyle = '#d7ffe7a8'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath(); ctx.arc(283, 309, 7 + i * 8, -.65, .65); ctx.stroke();
+    }
+  });
+}
+
 export function phoneTexture() {
   return texture(576, 1192, (ctx, w, h) => {
     ctx.fillStyle = '#f4f7f4'; ctx.fillRect(0, 0, w, h);

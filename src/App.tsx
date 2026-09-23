@@ -1,13 +1,13 @@
 import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { ArrowDown, ArrowUpRight, ChevronDown, EyeOff, Pause, Play, Wallet, CreditCard, MoveUpRight } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, ChevronDown, EyeOff, Wallet, CreditCard, MoveUpRight } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { STORY_END } from './story/chapters';
 
 gsap.registerPlugin(ScrollTrigger);
 const Scene = lazy(() => import('./scene/Scene'));
-export interface MotionState { progress: number; pointerX: number; pointerY: number; paused: boolean; visible: boolean }
+export interface MotionState { progress: number; pointerX: number; pointerY: number; visible: boolean }
 
 class SceneBoundary extends Component<{ children: ReactNode; onError: () => void }, { failed: boolean }> {
   state = { failed: false };
@@ -26,13 +26,12 @@ function StaticPhone() {
 
 export default function App() {
   const root = useRef<HTMLDivElement>(null);
-  const motion = useRef<MotionState>({ progress: 0, pointerX: 0, pointerY: 0, paused: false, visible: true });
+  const motion = useRef<MotionState>({ progress: 0, pointerX: 0, pointerY: 0, visible: true });
   const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [shortViewport, setShortViewport] = useState(() => window.matchMedia('(max-height: 540px)').matches);
   const [webgl, setWebgl] = useState(false);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [paused, setPaused] = useState(false);
   const staticMode = reduced || failed || shortViewport;
   const sceneReady = useCallback(() => setReady(true), []);
   const sceneFailed = useCallback(() => setFailed(true), []);
@@ -70,17 +69,41 @@ export default function App() {
     if (staticMode) return;
     const context = gsap.context(() => {
       const timeline = gsap.timeline({ scrollTrigger: {
-        trigger: '.story', start: 'top top', end: 'bottom bottom', scrub: .55,
+        trigger: '.story', start: 'top top', end: 'bottom bottom', scrub: .55, invalidateOnRefresh: true,
       } });
       timeline.to(motion.current, { progress: STORY_END, duration: STORY_END, ease: 'none' }, 0)
-        .to('.hero-copy', { autoAlpha: 0, y: -75, duration: .18, ease: 'none' }, .03)
+        .to('.hero-copy', { autoAlpha: 0, y: -75, duration: .27, ease: 'power1.in' }, .03)
+        .to('.hero-copy .primary-cta', { autoAlpha: 0, duration: .05, ease: 'none' }, .05)
+        .to('.hero-copy h1 span', { autoAlpha: 0, duration: .045, ease: 'none' }, .04)
         .to('.hero-bottom', { autoAlpha: 0, duration: .1 }, .01)
-        .to('.light-stage', { opacity: 1, duration: .36, ease: 'none' }, .4)
-        .to('.account-copy', { opacity: 1, y: 0, duration: .17, ease: 'none' }, .67)
-        .to('.account-detail', { opacity: 1, y: 0, duration: .13, ease: 'none' }, .84)
-        .to('.nav', { color: '#17241c', duration: .2 }, .55)
-        .to('.concept-label', { color: '#4b5951', duration: .2 }, .55)
-        .to('.motion-toggle', { color: '#17241c', borderColor: '#bac6bf', duration: .2 }, .55)
+        .set('.light-stage', { opacity: 1 }, 0)
+        // The product stays in the persistent Canvas as its panel opens into the story.
+        .to('.hero-panel', {
+          scaleX: () => window.innerWidth / (root.current!.querySelector<HTMLElement>('.hero-panel')!.offsetWidth),
+          scaleY: () => window.innerHeight / (root.current!.querySelector<HTMLElement>('.hero-panel')!.offsetHeight),
+          y: () => window.innerHeight / 2 - (root.current!.querySelector<HTMLElement>('.hero-panel')!.offsetTop + root.current!.querySelector<HTMLElement>('.hero-panel')!.offsetHeight / 2),
+          borderRadius: 0, boxShadow: '0 0 0 #0000', duration: .145, ease: 'power1.inOut',
+        }, .025)
+        .to('.hero-panel', { opacity: 0, duration: .06, ease: 'none' }, .17)
+        .to('.hero-atmosphere', { opacity: 0, duration: .13, ease: 'none' }, .1)
+        .to('.hero-copy .eyebrow, .hero-microcopy, .hero-details', { autoAlpha: 0, duration: .04 }, .025)
+        .to(root.current, { '--hero-chrome': 0, duration: .04, ease: 'none' }, .17)
+        .to('.nav', { color: '#17241c', duration: .04, ease: 'none' }, .17)
+        .to('.nav', {
+          paddingLeft: () => getComputedStyle(root.current!).getPropertyValue('--gutter'),
+          paddingRight: () => getComputedStyle(root.current!).getPropertyValue('--gutter'),
+          height: () => window.innerWidth < 760 || window.innerHeight <= 780 ? 84 : 102, duration: .15,
+        }, .08)
+        .to('.concept-label', {
+          left: () => getComputedStyle(root.current!).getPropertyValue('--gutter'),
+          bottom: () => window.innerWidth < 760 ? '23px' : '26px', duration: .15,
+        }, .08)
+        .to('.concept-label', { color: '#4b5951', duration: .04, ease: 'none' }, .17)
+        // Account takes over during the final 23% of the Hero, not after it.
+        .fromTo('.account-copy', { y: 120 }, { opacity: 1, y: 0, duration: .07, ease: 'none' }, .23)
+        .to('.account-detail', { opacity: 1, y: 0, duration: .05, ease: 'none' }, .25)
+        .to('.nav', { color: '#17241c', duration: .07 }, .23)
+        .to('.concept-label', { color: '#4b5951', duration: .07 }, .23)
         .to('.account-copy', { autoAlpha: 0, y: -35, duration: .15 }, 1.05)
         .to('.pix-copy', { autoAlpha: 1, y: 0, duration: .18 }, 1.2)
         .to('.pix-status', { autoAlpha: 1, duration: .08 }, 1.78)
@@ -93,14 +116,12 @@ export default function App() {
         .to('.light-stage', { backgroundColor: '#111b17', duration: .55, ease: 'none' }, 4.13)
         .to('.nav', { color: '#f1f6f2', duration: .35 }, 4.28)
         .to('.concept-label', { color: '#adbbb2', duration: .35 }, 4.28)
-        .to('.motion-toggle', { color: '#d4e3d9', borderColor: '#5c7064', duration: .35 }, 4.28)
         .to('.security-copy', { autoAlpha: 1, y: 0, duration: .18 }, 4.45)
         .to('.security-status', { autoAlpha: 1, duration: .12 }, 4.87)
         .to('.security-copy', { autoAlpha: 0, y: -35, duration: .16 }, 5.04)
         .to('.light-stage', { backgroundColor: '#f4f6f2', duration: .55, ease: 'none' }, 5.12)
         .to('.nav', { color: '#17241c', duration: .3 }, 5.4)
         .to('.concept-label', { color: '#4b5951', duration: .3 }, 5.4)
-        .to('.motion-toggle', { color: '#17241c', borderColor: '#bac6bf', duration: .3 }, 5.4)
         .to('.closing-copy', { autoAlpha: 1, y: 0, duration: .2 }, 5.48)
         .to('.progress-fill', { scaleX: 1, duration: STORY_END, ease: 'none' }, 0);
     }, root);
@@ -137,13 +158,17 @@ export default function App() {
     <main className="story" data-story-end={STORY_END}>
       <div className="stage">
         <div className="light-stage" />
-        {!staticMode && webgl && <div className="webgl" aria-hidden="true"><SceneBoundary onError={sceneFailed}><Suspense fallback={null}><Scene motion={motion} paused={paused} onReady={sceneReady} onFailure={sceneFailed} /></Suspense></SceneBoundary></div>}
+        <div className="hero-atmosphere" aria-hidden="true" />
+        <div className="hero-panel" aria-hidden="true" />
+        {!staticMode && webgl && <div className="webgl" aria-hidden="true"><SceneBoundary onError={sceneFailed}><Suspense fallback={null}><Scene motion={motion} onReady={sceneReady} onFailure={sceneFailed} /></Suspense></SceneBoundary></div>}
         <section className="hero-copy" aria-labelledby="hero-title">
           <div className="eyebrow"><span /> SIMPLES. DO SEU JEITO.</div>
           <h1 id="hero-title">Seu dinheiro.<br /><span>Em movimento.</span></h1>
+          <p className="hero-microcopy">Conta digital. Seu dia, do seu jeito.</p>
           <a className="primary-cta" href="https://picpay.com/pt-br/pf" target="_blank" rel="noopener noreferrer">Abrir conta no PicPay <ArrowUpRight size={18} /></a>
+          <div className="hero-details"><span>Conta digital</span><span>Pix</span><span>Cashback</span></div>
         </section>
-        <div className="fallback-hero" aria-hidden="true"><StaticCard /></div>
+        <div className="fallback-hero" aria-hidden="true"><div className="hero-stack-back hero-stack-silver"><StaticCard /></div><div className="hero-stack-back hero-stack-graphite"><StaticCard /></div><StaticCard /></div>
         <div className="hero-bottom"><span>CONTA DIGITAL<br /><b>Sua conta. Tudo à mão.</b></span><a href="#conta" onClick={goAccount} aria-label="Conhecer a conta digital"><ChevronDown size={20} /></a><span className="hero-bottom-right">FEITO PARA<br /><b>ACOMPANHAR VOCÊ.</b></span></div>
         <section id="conta" tabIndex={-1} className="account-copy" aria-labelledby="account-title">
           <div className="eyebrow"><span /> CONTA DIGITAL</div>
@@ -184,7 +209,6 @@ export default function App() {
           </section>
         </>}
         <div className="concept-label">Unofficial Concept / Concept Redesign<span>Projeto independente de portfólio, sem vínculo com o PicPay.</span></div>
-        {!staticMode && <button className="motion-toggle" aria-pressed={paused} aria-label={paused ? 'Retomar movimento ambiente' : 'Pausar movimento ambiente'} title={paused ? 'Retomar movimento ambiente' : 'Pausar movimento ambiente'} onClick={() => { motion.current.paused = !paused; setPaused(!paused); }}>{paused ? <Play size={14} /> : <Pause size={14} />}</button>}
         <div className="story-progress"><div className="progress-fill" /></div>
       </div>
     </main>
