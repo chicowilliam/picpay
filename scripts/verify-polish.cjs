@@ -21,8 +21,8 @@ async (page) => {
     await test.waitForTimeout(450);
     const after = await test.evaluate(() => window.__sceneInfo.rotation[1]);
     check(Math.abs(after - before) > .005, 'Pointer tilt not responding');
-    await test.getByRole('button', { name: 'Pausar movimento ambiente' }).click();
-    check(await test.getByRole('button', { name: 'Retomar movimento ambiente' }).getAttribute('aria-pressed') === 'true', 'Pause state failed');
+    await test.waitForFunction(() => window.__sceneInfo.ambientTime >= 4);
+    check(await test.locator('.motion-toggle').count() === 0, 'Obsolete pause control returned');
     await test.screenshot({ path: 'output/playwright/desktop-0.png' });
     await test.getByRole('link', { name: 'Conta digital', exact: true }).click();
     await test.waitForFunction(() => window.__sceneInfo.progress > .99);
@@ -44,6 +44,6 @@ async (page) => {
     await test.evaluate(() => window.scrollTo(0, 0));
     await test.screenshot({ path: 'output/playwright/landscape.png', fullPage: true });
     check(errors.length === 0, `Console errors: ${errors.join('; ')}`);
-    return { pointerTilt: after - before, pause: 'passed', anchorNavigation: 'passed', desktop, viewports: ['1440x900', '390x844', '360x640', '1920x1080', '844x390 static'], errors };
+    return { pointerTilt: after - before, ambientSettling: 'passed', anchorNavigation: 'passed', desktop, viewports: ['1440x900', '390x844', '360x640', '1920x1080', '844x390 static'], errors };
   } finally { await context.close(); }
 }

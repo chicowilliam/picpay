@@ -18,6 +18,7 @@ async (page) => {
     results.extension = await run('verify-extension');
     results.cardsSecurity = await run('verify-cards-security');
     results.closing = await run('verify-closing');
+    results.evolution = await run('verify-evolution');
     results.fallback = await run('verify-fallback');
     return results;
   } finally { await context.close(); }

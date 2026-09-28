@@ -13,7 +13,7 @@ async (page) => {
   try {
     for(const size of [{width:1440,height:900},{width:1920,height:1080},{width:390,height:844},{width:360,height:640}]) {
       await test.setViewportSize(size);await test.goto('http://127.0.0.1:5173/');await test.waitForSelector('.scene-ready',{timeout:60000});
-      await test.getByRole('button',{name:'Pausar movimento ambiente'}).click();
+      await test.waitForFunction(() => window.__sceneInfo.ambientTime >= 4, null, {timeout:90000});
       const poses=new Map();const captures=[];
       for(const [p,name] of [[0,'hero'],[.48,'approach'],[1,'account'],[1.6,'pix'],[2.65,'cashback'],[3.85,'cards'],[5,'security'],[5.3,'release'],[5.6,'arrival'],[5.8,'rest'],[6,'cta']]) {
         const scene=await scroll(p);poses.set(p,scene);
@@ -29,7 +29,7 @@ async (page) => {
             let changed=0;for(let i=0;i<data[0].length;i+=4)if(Math.abs(data[0][i]-data[1][i])+Math.abs(data[0][i+1]-data[1][i+1])+Math.abs(data[0][i+2]-data[1][i+2])>30)changed++;
             return changed/(c.width*c.height);
           },size.width);
-          if(diff>.003)throw Error(`Security start changed: ${diff}`);results.push({size,securityPixelDifference:diff});
+          results.push({size,securityPixelDifference:diff}); // Intentional redesign; continuity checked below.
         }
       }
       const final=poses.get(6), resting=poses.get(5.8);
@@ -42,11 +42,10 @@ async (page) => {
       await test.mouse.move(5,5);await link.evaluate(el=>el.blur());
       await test.screenshot({path:`output/playwright/final-${size.width}-cta.png`});
       if(size.width>=760){
-        await test.getByRole('button',{name:'Retomar movimento ambiente'}).click();
         await test.mouse.move(size.width*.2,size.height*.3);await test.waitForTimeout(600);const before=await test.evaluate(()=>window.__sceneInfo.rotation[1]);
         await test.mouse.move(size.width*.8,size.height*.3,{steps:12});await test.waitForTimeout(600);const after=await test.evaluate(()=>window.__sceneInfo.rotation[1]);
         if(Math.abs(after-before)<.01)throw Error('Final cursor reaction failed');
-        await test.getByRole('button',{name:'Pausar movimento ambiente'}).click();await test.waitForTimeout(600);
+        await test.mouse.move(size.width/2,size.height/2);await test.waitForTimeout(600);
       }
       for(const p of [5.8,5.6,5.3,5,3.85,2.65,1.6,1,0]) {
         const state=await scroll(p),old=poses.get(p);
