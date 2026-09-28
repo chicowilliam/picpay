@@ -15,8 +15,8 @@ export default function Transfer({ motion, compact, screenMaterial, accountMap }
   const maps = useMemo(() => ({ pix: transferTexture('pix'), sent: transferTexture('sent'), cashback: transferTexture('cashback'), returned: transferTexture('returned'), outgoing: amountTexture(false), incoming: amountTexture(true) }), []);
   const paths = useMemo(() => {
     const depth = compact ? .33 : .8;
-    const pix = new CubicBezierCurve3(new Vector3(0, .55, .17), new Vector3(compact ? .7 : 1.35, .55, depth), new Vector3(compact ? .7 : 1.35, -.62, depth), new Vector3(0, -.65, .17));
-    const cashback = new CubicBezierCurve3(new Vector3(compact ? -1 : -1.3, -.8, .9), new Vector3(compact ? -1.15 : -2.05, .1, depth + .5), new Vector3(-.75, 1.3, depth), new Vector3(0, .55, .17));
+    const pix = new CubicBezierCurve3(new Vector3(0, .55, .17), new Vector3(compact ? .58 : 1, .55, depth), new Vector3(compact ? .58 : 1, -.62, depth), new Vector3(0, -.65, .17));
+    const cashback = new CubicBezierCurve3(new Vector3(compact ? -1 : -1.3, -.8, .9), new Vector3(compact ? -1.45 : -2.05, -.25, depth + .5), new Vector3(compact ? -1.2 : -1.5, 1.3, depth + .35), new Vector3(0, .55, .17));
     return { pix, cashback, pixGeometry: new TubeGeometry(pix, 48, .012, 5, false), cashbackGeometry: new TubeGeometry(cashback, 48, .012, 5, false) };
   }, [compact]);
   const point = useMemo(() => new Vector3(), []);

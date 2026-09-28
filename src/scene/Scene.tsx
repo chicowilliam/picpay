@@ -90,9 +90,10 @@ function CardStack({ motion, compact, ambientTime }: { motion: RefObject<MotionS
     for (let i = 0; i < cards.length; i++) {
       const group = cards[i].current;
       if (!group) continue;
-      group.visible = spread > .001 || (heroSpread > .001 && (!compact || i === 0));
-      group.position.set((i + 1) * .22 * spread, (i + 1) * (compact ? .92 : 1.05) * spread, -(i + 1) * (compact ? .32 : .5) * spread - .075);
-      group.rotation.set(.035 * spread * (i + 1), .07 * spread * (i + 1), .045 * spread * (i + 1));
+      const layerSpread = spread * (i === 1 ? 1 - MathUtils.smoothstep(p, 4, 4.1) : 1);
+      group.visible = layerSpread > .001 || (heroSpread > .001 && (!compact || i === 0));
+      group.position.set((i + 1) * (compact ? .06 : -.13) * layerSpread, (i + 1) * (compact ? .92 : .98) * layerSpread, -(i + 1) * (compact ? .32 : .5) * layerSpread - .075);
+      group.rotation.set(.035 * layerSpread * (i + 1), .1 * layerSpread * (i + 1), -.025 * layerSpread * (i + 1));
       if (heroSpread > 0) {
         const depth = (i + 1) * heroSpread;
         const breathe = Math.sin(ambientTime.current * .7 + i * .8) * .018 * heroSpread;
@@ -102,7 +103,7 @@ function CardStack({ motion, compact, ambientTime }: { motion: RefObject<MotionS
     }
     if (import.meta.env.DEV) {
       const diagnostic = window as unknown as { __sceneInfo?: Record<string, unknown> };
-      Object.assign(diagnostic.__sceneInfo ??= {}, { cards: { spread, heroSpread, count: spread > .001 ? 3 : heroSpread > .001 ? compact ? 2 : 3 : 1 } });
+      Object.assign(diagnostic.__sceneInfo ??= {}, { cards: { spread, heroSpread, count: 1 + Number(graphite.current?.visible) + Number(silver.current?.visible) } });
     }
   });
   return <><group ref={graphite} visible={false}><Card finish="graphite" /></group><group ref={silver} visible={false}><Card finish="silver" /></group></>;
@@ -181,7 +182,7 @@ function World({ motion, onReady, onFailure }: Props) {
   useFrame((_, delta) => {
     const state = motion.current;
     const pose = samplePose(state.progress, mobile, sampledPose);
-    const cardsFocus = MathUtils.smoothstep(state.progress, 3, 3.4) * (1 - MathUtils.smoothstep(state.progress, 4.25, 4.55));
+    const cardsFocus = MathUtils.smoothstep(state.progress, 3, 3.4) * (1 - MathUtils.smoothstep(state.progress, 4.1, 4.45));
     const closing = MathUtils.smoothstep(state.progress, 5, 5.8);
     const mobileScale = MathUtils.clamp((size.height - 380) / 400, .52, 1);
     const pixelsPerUnit = size.width / 4.05;
@@ -226,11 +227,19 @@ function World({ motion, onReady, onFailure }: Props) {
       phone.current.position.set(mobile ? .37 : 2.08, (mobile ? (size.height / 2 - phoneCenter) / pixelsPerUnit : .03) - (1 - pose.phone) * 2.3, -.15);
       phone.current.rotation.set(.025, -.2 + (1 - pose.phone) * .3, -.055);
       phone.current.scale.setScalar((mobile ? phoneScale : 1.04) * Math.max(.001, pose.phone));
+      // Leave the approved card entrance untouched; give the following phone chapters a fuller frame.
+      const productFocus = MathUtils.smoothstep(state.progress, .3, 1);
+      if (mobile) {
+        const fullScale = Math.max(.72, phoneScale);
+        const center = size.height * .16 + 172 + 4.02 * fullScale * pixelsPerUnit / 2;
+        phone.current.position.y += productFocus * (phoneCenter - center) / pixelsPerUnit;
+        phone.current.scale.multiplyScalar(MathUtils.lerp(1, fullScale / phoneScale, productFocus));
+      }
       // Recede before the extra cards separate: at most three product objects on mobile.
       if (state.progress > 3) {
         phone.current.position.z -= cardsFocus * 1.35;
         phone.current.scale.multiplyScalar(Math.max(.16, 1 - cardsFocus * .84));
-        phone.current.visible = pose.phone > .002;
+        phone.current.visible = pose.phone > .002 && cardsFocus < .999;
       }
       if (closing > 0) {
         phone.current.position.x += closing * (mobile ? .04 : .2);
@@ -252,7 +261,7 @@ function World({ motion, onReady, onFailure }: Props) {
     }
     if (fill.current) {
       fill.current.color.lerpColors(fillColors[0], fillColors[1], heroBlend);
-      fill.current.intensity = .65 + heroBlend * .22;
+      fill.current.intensity = .65 + heroBlend * .22 + cardsFocus * .3;
     }
     if (!ready.current) { ready.current = true; readyFrame.current = requestAnimationFrame(onReady); }
     if (samples.current.count < 180 && delta < .2) {

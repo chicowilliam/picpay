@@ -104,25 +104,30 @@ export default function App() {
         .to('.account-detail', { opacity: 1, y: 0, duration: .05, ease: 'none' }, .25)
         .to('.nav', { color: '#17241c', duration: .07 }, .23)
         .to('.concept-label', { color: '#4b5951', duration: .07 }, .23)
-        .to('.account-copy', { autoAlpha: 0, y: -35, duration: .15 }, 1.05)
-        .to('.pix-copy', { autoAlpha: 1, y: 0, duration: .18 }, 1.2)
+        .to('.account-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 1.05)
+        .to('.pix-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 1.12)
+        .to('.light-stage', { backgroundColor: '#e5efe8', duration: .4, ease: 'none' }, 1.08)
+        .to('.pix-route-progress', { scaleX: 1, duration: .35, ease: 'none' }, 1.43)
         .to('.pix-status', { autoAlpha: 1, duration: .08 }, 1.78)
-        .to('.pix-copy', { autoAlpha: 0, y: -35, duration: .15 }, 1.94)
-        .to('.cashback-copy', { autoAlpha: 1, y: 0, duration: .18 }, 2.13)
+        .to('.pix-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 1.94)
+        .to('.cashback-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 2.01)
+        .to('.light-stage', { backgroundColor: '#f4f6f2', duration: .4, ease: 'none' }, 1.94)
         .to('.return-status', { autoAlpha: 1, duration: .1 }, 2.84)
-        .to('.cashback-copy', { autoAlpha: 0, y: -35, duration: .15 }, 3.05)
-        .to('.cards-copy', { autoAlpha: 1, y: 0, duration: .18 }, 3.22)
-        .to('.cards-copy', { autoAlpha: 0, y: -35, duration: .16 }, 4.07)
+        .to('.cashback-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 3.05)
+        .to('.cards-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 3.12)
+        .to('.cards-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 4.13)
         .to('.light-stage', { backgroundColor: '#111b17', duration: .55, ease: 'none' }, 4.13)
         .to('.nav', { color: '#f1f6f2', duration: .35 }, 4.28)
         .to('.concept-label', { color: '#adbbb2', duration: .35 }, 4.28)
-        .to('.security-copy', { autoAlpha: 1, y: 0, duration: .18 }, 4.45)
+        .to('.security-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 4.2)
+        .fromTo('.security-copy', { color: '#172c1e' }, { color: '#f0f6f2', duration: .3, ease: 'none' }, 4.3)
         .to('.security-status', { autoAlpha: 1, duration: .12 }, 4.87)
-        .to('.security-copy', { autoAlpha: 0, y: -35, duration: .16 }, 5.04)
-        .to('.light-stage', { backgroundColor: '#f4f6f2', duration: .55, ease: 'none' }, 5.12)
+        .to('.security-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 5.12)
+        .to('.light-stage', { backgroundColor: '#e5efe8', duration: .55, ease: 'none' }, 5.12)
         .to('.nav', { color: '#17241c', duration: .3 }, 5.4)
         .to('.concept-label', { color: '#4b5951', duration: .3 }, 5.4)
-        .to('.closing-copy', { autoAlpha: 1, y: 0, duration: .2 }, 5.48)
+        .to('.closing-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 5.19)
+        .fromTo('.closing-copy', { color: '#f0f6f2' }, { color: '#172c1e', duration: .3, ease: 'none' }, 5.3)
         .to('.progress-fill', { scaleX: 1, duration: STORY_END, ease: 'none' }, 0);
     }, root);
     let active = true;
@@ -173,8 +178,8 @@ export default function App() {
         <section id="conta" tabIndex={-1} className="account-copy" aria-labelledby="account-title">
           <div className="eyebrow"><span /> CONTA DIGITAL</div>
           <h2 id="account-title">Sua conta.<br /><span>Tudo à mão.</span></h2>
-          <p>Seu dinheiro e seus próximos passos.<br className="desktop-break" /> No mesmo lugar.</p>
-          <div className="account-detail"><div><Wallet size={19} /><span>Um olhar para sua conta.</span></div><div><EyeOff size={19} /><span>Você escolhe o que mostrar.</span></div><small>Interface conceitual. Dados demonstrativos.</small></div>
+          <p>Saldo, cartão e Pix. No mesmo lugar.</p>
+          <div className="account-detail"><div><Wallet size={19} /><span>Seus movimentos, à vista.</span></div><div><EyeOff size={19} /><span>Você controla a visualização.</span></div><small>Interface conceitual. Dados demonstrativos.</small></div>
         </section>
         <div className="fallback-account" aria-hidden="true"><StaticPhone /><StaticCard /></div>
         {!staticMode && <>
@@ -182,27 +187,32 @@ export default function App() {
             <div className="eyebrow"><span /> PIX</div>
             <h2 id="pix-title">Enviou.<br /><span>Chegou.</span></h2>
             <p>De você. Para alguém.</p>
+            <div className="product-detail pix-route"><div><span>Você</span><span>Ana</span></div><div className="pix-route-track"><span className="pix-route-progress" /></div><small>Origem e destino fictícios</small></div>
             <div className="chapter-note"><strong className="pix-status">Transferência concluída.</strong><small>Simulação visual. Pessoas e valores fictícios.</small></div>
           </section>
           <section className="chapter-copy cashback-copy" aria-labelledby="cashback-title">
             <div className="eyebrow"><span /> CASHBACK</div>
             <h2 id="cashback-title">Uma parte<br /><span>volta.</span></h2>
-            <p>O movimento faz o caminho de volta.</p>
+            <p>Da compra de volta à conta.</p>
+            <div className="product-detail return-amount"><span>↩</span> R$ 12,40<small>Exemplo de retorno</small></div>
             <div className="chapter-note"><strong className="return-status">De volta ao saldo demonstrativo.</strong><small>R$ 12,40 ilustrativos. Não é uma oferta ou promessa de benefício.</small></div>
           </section>
           <section className="chapter-copy cards-copy" aria-labelledby="cards-title">
             <div className="eyebrow"><span /> PICPAY CARDS</div>
             <h2 id="cards-title">Escolha<br /><span>o seu.</span></h2>
             <p>O seu jeito, em cada detalhe.</p>
+            <div className="product-detail finishes" aria-label="Acabamentos conceituais"><span><i />Verde</span><span><i />Grafite</span><span><i />Prata</span></div>
             <div className="chapter-note"><small>Acabamentos conceituais. Não representam produtos ou ofertas reais.</small></div>
           </section>
           <section className="chapter-copy security-copy" aria-labelledby="security-title">
             <div className="eyebrow"><span /> SEGURANÇA</div>
             <h2 id="security-title">Controle na<br /><span>sua mão.</span></h2>
             <p>Seu cartão. Suas decisões.</p>
+            <div className="product-detail control-detail"><span>Cartão digital</span><strong>Bloqueio temporário</strong></div>
             <div className="chapter-note"><strong className="security-status">Bloqueio ilustrativo ativo.</strong><small>Interface conceitual. Nenhum bloqueio real é realizado.</small></div>
           </section>
           <section className="chapter-copy closing-copy" aria-labelledby="closing-title">
+            <div className="closing-brand">picpay<span>.</span></div>
             <h2 id="closing-title">Seu próximo<br /><span>movimento.</span></h2>
             <p>O próximo passo é seu.</p>
             <a className="primary-cta" href="https://picpay.com/pt-br/pf" target="_blank" rel="noopener noreferrer">Abrir conta no PicPay <ArrowUpRight size={18} /></a>

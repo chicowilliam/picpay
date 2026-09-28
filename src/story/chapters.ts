@@ -44,10 +44,8 @@ const poseKeys = Object.keys(chapters[0].desktop) as (keyof ScenePose)[];
 // with the inter-chapter repositioning concealed while the card is retracted.
 const cardAppearances = [
   [-1, 0, 1, 1.25],
-  [2.345, 2.45, 3, 3.2],
-  [3.22, 3.4, 4, 4.22],
-  [4.45, 4.65, 5.05, 5.25],
-  [5.45, 5.75, STORY_END, STORY_END + 1],
+  [2.345, 2.45, 4.08, 4.4],
+  [4.4, 4.65, STORY_END, STORY_END + 1],
 ];
 const smoothProgress = (p: number, start: number, end: number) => {
   const t = Math.max(0, Math.min(1, (p - start) / (end - start)));

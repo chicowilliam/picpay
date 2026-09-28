@@ -77,11 +77,11 @@ export function phoneTexture() {
     label(ctx, 'Olá, você.', 35, 156, 32, '#1b3023', 700);
     round(ctx, 471, 112, 65, 65, 32, '#dcf0e0'); label(ctx, 'p', 493, 158, 37, '#148442', 800);
     round(ctx, 25, 205, 526, 270, 25, '#e2f0e4');
-    label(ctx, 'Saldo em conta', 53, 254, 22, '#354e3e');
-    label(ctx, 'R$ ••••', 53, 323, 44, '#183f29', 700);
+    label(ctx, 'Saldo demonstrativo', 53, 254, 22, '#354e3e');
+    label(ctx, 'R$ 2.480,00', 53, 323, 44, '#183f29', 700);
     round(ctx, 51, 376, 216, 59, 29, '#1c412b'); label(ctx, 'Ver minha conta', 71, 413, 19, '#fff', 600);
     label(ctx, '↗', 479, 326, 39, '#183f29');
-    const items = [['↗', 'Enviar'], ['↓', 'Receber'], ['▤', 'Cartão']];
+    const items = [['↗', 'Pix'], ['↓', 'Receber'], ['▤', 'Cartão']];
     items.forEach(([icon, name], index) => {
       round(ctx, 42 + index * 180, 520, 128, 108, 22, '#fff');
       label(ctx, icon, 85 + index * 180, 584, 36, '#2b4936', 500);
@@ -89,9 +89,9 @@ export function phoneTexture() {
     });
     label(ctx, 'Sua atividade', 35, 750, 27, '#22372a', 700);
     round(ctx, 27, 786, 522, 163, 20, '#fff');
-    label(ctx, 'Tudo em um só lugar', 52, 834, 22, '#2d4435', 600);
-    label(ctx, 'Acompanhe seus movimentos.', 52, 877, 20, '#6d7f71');
-    label(ctx, '→', 485, 838, 30, '#244f33');
+    label(ctx, 'Pix recebido', 52, 834, 24, '#2d4435', 600);
+    label(ctx, '+ R$ 100,00', 52, 885, 30, '#087f4c', 600);
+    label(ctx, 'Exemplo', 425, 837, 18, '#52675b');
     ctx.fillStyle = '#d8e4db'; ctx.fillRect(25, 1009, 526, 1);
     label(ctx, '⌂', 71, 1071, 34, '#148543'); label(ctx, '▤', 262, 1071, 30, '#7b8a80'); label(ctx, '○', 452, 1071, 34, '#7b8a80');
     label(ctx, 'Início', 63, 1108, 17, '#148543', 700); label(ctx, 'Carteira', 246, 1108, 17, '#718077'); label(ctx, 'Perfil', 447, 1108, 17, '#718077');
@@ -103,14 +103,14 @@ export function layerTexture(kind: 'balance' | 'activity') {
   return texture(640, kind === 'balance' ? 230 : 155, (ctx, w, h) => {
     ctx.fillStyle = kind === 'balance' ? '#e7f5e9' : '#fff'; ctx.fillRect(0, 0, w, h);
     if (kind === 'balance') {
-      label(ctx, 'Sua conta', 35, 58, 27, '#36533f', 500);
-      label(ctx, 'R$ ••••', 35, 144, 62, '#1f432d', 700);
-      label(ctx, 'SALDO PRIVADO', 37, 199, 17, '#65826d', 600);
+      label(ctx, 'Saldo em conta', 35, 58, 27, '#36533f', 500);
+      label(ctx, 'R$ 2.480,00', 35, 144, 55, '#1f432d', 700);
+      label(ctx, 'VALOR DEMONSTRATIVO', 37, 199, 17, '#526f5b', 600);
       label(ctx, '↗', 545, 129, 49, '#257645');
     } else {
       round(ctx, 25, 31, 89, 89, 44, '#e3f2e7'); label(ctx, '↗', 50, 92, 42, '#267043');
-      label(ctx, 'Sua atividade', 140, 67, 29, '#284331', 700);
-      label(ctx, 'Cada movimento, no seu lugar.', 140, 112, 22, '#748377');
+      label(ctx, 'Pix recebido', 140, 67, 29, '#284331', 700);
+      label(ctx, '+ R$ 100,00 · Demonstração', 140, 112, 22, '#52675b');
     }
   });
 }
@@ -128,7 +128,11 @@ export function transferTexture(kind: 'pix' | 'sent' | 'cashback' | 'returned') 
     label(ctx, pix ? 'De você' : 'Saldo demonstrativo', 55, 404, 26);
     label(ctx, pix ? 'R$ 100,00' : done ? '+ R$ 12,40' : 'R$ ••••', 55, 485, 48, '#1c472d', 700);
     label(ctx, pix ? 'Origem fictícia' : done ? 'Retorno recebido' : 'Aguardando retorno', 55, 549, 21, '#55725f');
-    label(ctx, pix ? 'Para Ana' : 'Movimento de retorno', pix ? 100 : 42, 811, 30, '#1c3525', 700);
+    if (pix) {
+      round(ctx, 28, 738, 54, 54, 27, '#087f4c');
+      label(ctx, 'A', 44, 775, 27, '#fff', 700);
+    }
+    label(ctx, pix ? 'Para Ana' : 'Retorno da compra', pix ? 100 : 42, 811, 30, '#1c3525', 700);
     label(ctx, pix ? 'Destino fictício' : 'R$ 12,40 ilustrativos', pix ? 100 : 42, 859, 22, '#64786b');
     round(ctx, 28, 934, 520, 95, 15, done ? '#1b6f40' : '#e4ece6');
     label(ctx, done ? '✓  Concluído' : pix ? 'Transferência em movimento' : 'De volta à sua conta', 53, 994, done ? 29 : 22, done ? '#fff' : '#4f6657', 600);
@@ -158,8 +162,8 @@ export function securityTexture(blocked: boolean) {
     label(ctx, 'Bloqueio', 52, 421, 29, '#f0f7f2', 600);
     label(ctx, 'temporário', 52, 462, 29, '#f0f7f2', 600);
     label(ctx, blocked ? 'Cartão bloqueado' : 'Cartão disponível', 52, 559, 25, blocked ? '#87dda5' : '#b8cbbf', 600);
-    label(ctx, 'Você decide.', 38, 744, 31, '#eef7f0', 600);
-    label(ctx, 'Controle no seu tempo.', 38, 801, 23, '#a0baa9');
+    label(ctx, 'Cartão digital', 38, 744, 31, '#eef7f0', 600);
+    label(ctx, 'Final 0000 · Demonstrativo', 38, 801, 23, '#a0baa9');
     label(ctx, blocked ? '✓  Bloqueio ilustrativo ativo' : 'Aguardando ativação ilustrativa', 38, 973, 22, '#bde4ca', 600);
     label(ctx, 'SIMULAÇÃO · NENHUMA AÇÃO REAL', 44, 1119, 17, '#a0baa9', 600);
   });
