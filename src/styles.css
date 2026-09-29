@@ -221,3 +221,108 @@
   .static-mode .fallback-hero{top:400px;transform:translate(-50%,-50%) rotate(-16deg) scale(.78)}
   .static-mode .concept-label{color:#effff5}
 }
+
+/* Account and Pix product stages. They sit behind the persistent WebGL product. */
+.account-product-stage,.pix-product-stage{position:absolute;z-index:1;pointer-events:none;visibility:hidden;opacity:0;will-change:transform,opacity}
+.account-product-stage{inset:116px 4.8% 72px;border:1px solid #cbd9cf;background:#edf3ee;border-radius:8px;overflow:hidden;color:#173323;box-shadow:0 20px 50px #194a2b12}
+.account-product-stage::before{content:'';position:absolute;inset:0 0 0 52%;background:linear-gradient(135deg,#d5eadb 0%,#e8f2eb 54%,#cbe8d4 100%);border-left:1px solid #ccded1}
+.account-product-stage::after{content:'CONTA DIGITAL';position:absolute;right:-20px;bottom:-30px;font-size:94px;font-weight:700;color:#0b68391a;white-space:nowrap}
+.account-stage-meta,.pix-stage-meta{position:absolute;top:22px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:1px solid #baccc066;font-size:9px;font-weight:700;color:#4f6958}
+.account-stage-balance{position:absolute;left:45%;top:19%;width:245px;padding:20px 22px;background:#f7faf7;border:1px solid #bdd3c3;border-radius:5px;box-shadow:0 14px 28px #164a2a12}
+.account-stage-balance span,.account-stage-balance small{display:block;font-size:10px;color:#5a7161}
+.account-stage-balance strong{display:block;margin:10px 0 7px;font-size:29px;line-height:1;font-weight:650}
+.account-stage-balance small{text-transform:uppercase;font-size:8px;font-weight:700}
+.account-stage-actions{position:absolute;left:54%;right:4%;bottom:12%;display:grid;grid-template-columns:repeat(3,1fr);height:82px;background:#f7faf7;border:1px solid #bdd3c3;border-radius:5px;box-shadow:0 14px 28px #164a2a0d}
+.account-stage-actions span{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;font-size:10px;font-weight:650;color:#335541}
+.account-stage-actions span+span{border-left:1px solid #d5e1d8}
+.account-stage-actions svg{width:16px;height:16px;stroke-width:1.7;color:#087f4c}
+.account-stage-activity{position:absolute;right:3.2%;top:35%;width:286px;min-height:78px;padding:15px 17px;display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;background:#fff;border:1px solid #c4d4c8;border-radius:5px;box-shadow:0 15px 35px #164a2a14}
+.account-stage-activity>i{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#dff1e4;color:#087f4c}
+.account-stage-activity svg{width:17px;stroke-width:1.7}
+.account-stage-activity span,.account-stage-activity strong{font-style:normal;font-size:11px;font-weight:650}
+.account-stage-activity small{display:block;margin-top:4px;font-size:8px;font-weight:500;color:#718279}
+.account-stage-activity>strong{text-align:right;color:#087f4c}
+.account-stage-caption{position:absolute;left:28px;bottom:26px;font-size:9px;line-height:1.65;font-weight:700;color:#587061}
+.account-stage-caption span{color:#14824a}
+.account-copy{left:9%;top:27%;width:35%}
+.account-copy h2{font-size:80px}
+.account-copy p{max-width:330px}
+.account-detail{display:flex;gap:24px;flex-wrap:wrap;max-width:380px}
+.account-detail>div{margin:4px 0}
+.account-detail small{flex-basis:100%;margin-top:5px}
+
+.pix-product-stage{inset:112px 4.2% 70px 40%;border-radius:8px;background:#087f4c;color:#153a26;box-shadow:0 20px 52px #084c2a24;overflow:hidden}
+.pix-product-stage::before{content:'';position:absolute;inset:22px;background:#f5f8f5;border-radius:5px;box-shadow:inset 0 0 0 1px #d5e2d8}
+.pix-product-stage::after{content:'PIX';position:absolute;right:28px;bottom:5px;font-size:88px;line-height:1;font-weight:800;color:#e8fff022}
+.pix-stage-meta{top:42px;left:48px;right:48px;color:#557061;z-index:1}
+.pix-stage-node{position:absolute;z-index:1;top:22%;width:150px;padding-top:12px;border-top:2px solid #1bad61}
+.pix-stage-node span,.pix-stage-node small{display:block;font-size:9px;color:#678071}
+.pix-stage-node strong{display:block;margin:8px 0 5px;font-size:23px;font-weight:650}
+.pix-stage-origin{left:7%}.pix-stage-destination{right:2%;width:118px;text-align:right}
+.pix-stage-route{position:absolute;z-index:1;left:7%;right:6%;bottom:17%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px}
+.pix-stage-route .pix-route-track{height:3px;margin:0;background:#c4d8ca}
+.pix-stage-route strong{min-width:112px;padding:10px 12px;background:#0b6f3c;color:#fff;border-radius:3px;font-size:15px;text-align:center;box-shadow:0 8px 18px #0b5d3422}
+.pix-stage-confirmation{position:absolute;z-index:3;left:7%;bottom:30%;width:230px;padding:14px 16px;display:grid;grid-template-columns:34px 1fr;column-gap:11px;align-items:center;background:#0b6f3c;color:#fff;border-radius:5px;box-shadow:0 14px 28px #073b2328;opacity:0;visibility:hidden;transform:translateY(12px)}
+.pix-stage-confirmation>span{grid-row:1/3;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#c9f3d8;color:#086036;font-weight:800}
+.pix-stage-confirmation strong{font-size:13px}.pix-stage-confirmation small{font-size:8px;color:#d4f2df}
+.pix-copy{left:9%;top:27%;width:31%}
+.pix-copy h2{font-size:80px}
+.pix-copy p{font-size:15px}
+.pix-copy .chapter-note{margin-top:44px}
+
+@media(min-width:1600px){
+  .account-copy,.pix-copy{left:8%}.account-copy h2,.pix-copy h2{font-size:98px}
+  .account-stage-balance{left:48%;width:285px}.account-stage-activity{width:330px}
+  .pix-product-stage{left:39%}.pix-stage-node{width:180px}.pix-stage-node strong{font-size:27px}
+}
+
+@media(min-width:760px) and (max-width:1199px){
+  .account-copy h2,.pix-copy h2{font-size:58px}
+  .account-stage-balance{left:43%;width:210px}.account-stage-activity{width:230px}
+  .account-stage-actions{left:52%}
+  .pix-product-stage{left:38%}.pix-stage-node{width:120px}
+}
+
+@media(max-width:759px){
+  .account-product-stage{inset:88px 12px 62px;border-radius:6px;background:#edf3ee}
+  .account-product-stage::before{inset:31% 0 0;background:linear-gradient(155deg,#d9ebde,#eff5f0 58%,#cce5d4);border-left:0;border-top:1px solid #ccded1}
+  .account-product-stage::after{right:-8px;bottom:30px;font-size:48px}
+  .account-stage-meta,.pix-stage-meta{top:14px;left:14px;right:14px;padding-bottom:10px;font-size:7px}
+  .account-copy{left:24px;top:13%;width:calc(100% - 48px)}
+  .account-copy h2{font-size:46px}
+  .account-copy p{font-size:12px}
+  .account-detail{top:calc(87svh - 96px);display:block;max-width:none}
+  .account-stage-balance{left:14px;top:36%;width:145px;padding:12px 13px}
+  .account-stage-balance strong{font-size:19px;margin:7px 0 5px}.account-stage-balance span{font-size:8px}.account-stage-balance small{font-size:6px}
+  .account-stage-actions{left:14px;right:14px;bottom:16%;height:58px}
+  .account-stage-actions span{gap:5px;font-size:8px}.account-stage-actions svg{width:13px;height:13px}
+  .account-stage-activity{right:12px;top:49%;width:182px;min-height:56px;padding:9px 10px;grid-template-columns:28px 1fr auto;gap:7px}
+  .account-stage-activity>i{width:28px;height:28px}.account-stage-activity svg{width:13px}
+  .account-stage-activity span,.account-stage-activity strong{font-size:8px}.account-stage-activity small{font-size:6px}
+  .account-stage-caption{display:none}
+
+  .pix-product-stage{inset:284px 12px 62px;border-radius:6px}
+  .pix-product-stage::before{inset:8px}
+  .pix-product-stage::after{right:14px;bottom:4px;font-size:44px}
+  .pix-stage-meta{top:18px;left:20px;right:20px}
+  .pix-stage-meta span:last-child{display:none}
+  .pix-stage-node{top:16%;width:82px;padding-top:7px}
+  .pix-stage-node span,.pix-stage-node small{font-size:6px}.pix-stage-node strong{margin:5px 0 3px;font-size:14px}
+  .pix-stage-origin{left:6%}.pix-stage-destination{right:6%;width:82px;text-align:right}
+  .pix-stage-route{left:6%;right:6%;bottom:12%;gap:8px}
+  .pix-stage-route strong{min-width:84px;padding:8px;font-size:11px}
+  .pix-stage-confirmation{left:5%;right:auto;top:47%;bottom:auto;width:118px;padding:9px 10px;grid-template-columns:25px 1fr;column-gap:7px}
+  .pix-stage-confirmation>span{width:24px;height:24px;font-size:10px}.pix-stage-confirmation strong{font-size:10px}.pix-stage-confirmation small{display:none}
+  .pix-copy{left:24px;top:13%;width:calc(100% - 48px)}
+  .pix-copy h2{font-size:46px}.pix-copy p{font-size:12px}
+  .pix-copy .chapter-note{top:calc(87svh - 82px);margin:0}.pix-copy .chapter-note strong{display:none}
+}
+
+@media(max-width:759px) and (max-height:740px){
+  .account-product-stage{inset:76px 10px 52px}.account-copy{left:20px;top:16%;width:calc(100% - 40px)}
+  .account-copy h2,.pix-copy h2{font-size:38px}
+  .account-product-stage::before{inset:36% 0 0}.account-stage-balance{top:38%;width:132px}.account-stage-activity{top:50%;width:166px}
+  .account-stage-actions{bottom:15%;height:50px}
+  .pix-product-stage{inset:260px 10px 52px}.pix-copy{left:20px;top:16%;width:calc(100% - 40px)}
+  .pix-copy .chapter-note{top:calc(84svh - 82px)}
+}

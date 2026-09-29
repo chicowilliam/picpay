@@ -24,6 +24,47 @@ function StaticPhone() {
   return <div className="static-phone"><div className="phone-island" /><div className="phone-welcome">Olá, você.<span>p</span></div><p>Saldo em conta</p><strong>R$ ••••</strong><div className="phone-actions"><Wallet /><CreditCard /><MoveUpRight /></div><div className="phone-row">Sua conta<span>→</span></div><div className="phone-row">Sua atividade<span>→</span></div><small>Interface conceitual</small></div>;
 }
 
+function AccountProductStage() {
+  return <div className="account-product-stage" aria-hidden="true">
+    <div className="account-stage-meta stage-reveal"><span>01 / CONTA</span><span>VISÃO DO DIA</span></div>
+    <div className="account-stage-balance stage-reveal">
+      <span>Saldo em conta</span>
+      <strong>R$ 2.480,00</strong>
+      <small>Valor demonstrativo</small>
+    </div>
+    <div className="account-stage-actions stage-reveal">
+      <span><MoveUpRight />Pix</span>
+      <span><ArrowDown />Receber</span>
+      <span><CreditCard />Cartão</span>
+    </div>
+    <div className="account-stage-activity stage-reveal">
+      <i><MoveUpRight /></i>
+      <span>Pix recebido<small>Hoje, 09:41</small></span>
+      <strong>+ R$ 100,00<small>Demonstração</small></strong>
+    </div>
+    <div className="account-stage-caption stage-reveal">TUDO CONECTADO<br /><span>NO MESMO APP.</span></div>
+  </div>;
+}
+
+function PixProductStage() {
+  return <div className="pix-product-stage" aria-hidden="true">
+    <div className="pix-stage-meta stage-reveal"><span>02 / PIX</span><span>TRANSFERÊNCIA DEMONSTRATIVA</span></div>
+    <div className="pix-stage-node pix-stage-origin stage-reveal">
+      <span>Origem</span><strong>Você</strong><small>Conta demonstrativa</small>
+    </div>
+    <div className="pix-stage-node pix-stage-destination stage-reveal">
+      <span>Destino</span><strong>Ana</strong><small>Pessoa fictícia</small>
+    </div>
+    <div className="pix-stage-route stage-reveal">
+      <div className="pix-route-track"><span className="pix-route-progress" /></div>
+      <strong>R$ 100,00</strong>
+    </div>
+    <div className="pix-stage-confirmation">
+      <span>✓</span><strong>Chegou.</strong><small>Transferência demonstrativa concluída</small>
+    </div>
+  </div>;
+}
+
 export default function App() {
   const root = useRef<HTMLDivElement>(null);
   const motion = useRef<MotionState>({ progress: 0, pointerX: 0, pointerY: 0, visible: true });
@@ -102,14 +143,21 @@ export default function App() {
         // Account takes over during the final 23% of the Hero, not after it.
         .fromTo('.account-copy', { y: 120 }, { opacity: 1, y: 0, duration: .07, ease: 'none' }, .23)
         .to('.account-detail', { opacity: 1, y: 0, duration: .05, ease: 'none' }, .25)
+        .fromTo('.account-product-stage', { autoAlpha: 0, scale: .965 }, { autoAlpha: 1, scale: 1, duration: .16, ease: 'power1.out' }, .21)
+        .fromTo('.account-product-stage .stage-reveal', { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: .18, stagger: .025, ease: 'power1.out' }, .31)
         .to('.nav', { color: '#17241c', duration: .07 }, .23)
         .to('.concept-label', { color: '#4b5951', duration: .07 }, .23)
         .to('.account-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 1.05)
+        .to('.account-product-stage', { autoAlpha: 0, xPercent: -2, scale: .985, duration: .15, ease: 'none' }, 1.04)
+        .fromTo('.pix-product-stage', { autoAlpha: 0, xPercent: 3, scale: .985 }, { autoAlpha: 1, xPercent: 0, scale: 1, duration: .16, ease: 'none' }, 1.03)
+        .fromTo('.pix-product-stage .stage-reveal', { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: .16, stagger: .025, ease: 'power1.out' }, 1.11)
         .to('.pix-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 1.12)
         .to('.light-stage', { backgroundColor: '#e5efe8', duration: .4, ease: 'none' }, 1.08)
         .to('.pix-route-progress', { scaleX: 1, duration: .35, ease: 'none' }, 1.43)
         .to('.pix-status', { autoAlpha: 1, duration: .08 }, 1.78)
+        .to('.pix-stage-confirmation', { autoAlpha: 1, y: 0, duration: .08, ease: 'none' }, 1.78)
         .to('.pix-copy', { autoAlpha: 0, y: -24, duration: .09, ease: 'none' }, 1.94)
+        .to('.pix-product-stage', { autoAlpha: 0, xPercent: -2, scale: .985, duration: .14, ease: 'none' }, 1.93)
         .to('.cashback-copy', { autoAlpha: 1, y: 0, duration: .12, ease: 'none' }, 2.01)
         .to('.light-stage', { backgroundColor: '#f4f6f2', duration: .4, ease: 'none' }, 1.94)
         .to('.return-status', { autoAlpha: 1, duration: .1 }, 2.84)
@@ -163,6 +211,7 @@ export default function App() {
     <main className="story" data-story-end={STORY_END}>
       <div className="stage">
         <div className="light-stage" />
+        {!staticMode && <><AccountProductStage /><PixProductStage /></>}
         <div className="hero-atmosphere" aria-hidden="true" />
         <div className="hero-panel" aria-hidden="true" />
         {!staticMode && webgl && <div className="webgl" aria-hidden="true"><SceneBoundary onError={sceneFailed}><Suspense fallback={null}><Scene motion={motion} onReady={sceneReady} onFailure={sceneFailed} /></Suspense></SceneBoundary></div>}
@@ -187,7 +236,6 @@ export default function App() {
             <div className="eyebrow"><span /> PIX</div>
             <h2 id="pix-title">Enviou.<br /><span>Chegou.</span></h2>
             <p>De você. Para alguém.</p>
-            <div className="product-detail pix-route"><div><span>Você</span><span>Ana</span></div><div className="pix-route-track"><span className="pix-route-progress" /></div><small>Origem e destino fictícios</small></div>
             <div className="chapter-note"><strong className="pix-status">Transferência concluída.</strong><small>Simulação visual. Pessoas e valores fictícios.</small></div>
           </section>
           <section className="chapter-copy cashback-copy" aria-labelledby="cashback-title">
